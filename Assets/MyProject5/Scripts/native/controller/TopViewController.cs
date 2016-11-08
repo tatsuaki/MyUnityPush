@@ -109,20 +109,20 @@ public class TopViewController : MonoBehaviour {
 ////				mail.OpenMailer();
 //			});
 //		}
-//		if (GetNativeButton() != null) 
-//		{
-//			GetNativeButton().onClick.AddListener(() => {
-//				MyLog.I("click GetNativeButton");
-//				if (null == m_AndroidPluguin) {
-//					m_AndroidPluguin = gameObject.AddComponent<AndroidPlugin>();
-//					MyLog.I("add AndroidPlugin");
-//				}
-//				// ShowDialog(string method, string title, string message, 
-//				// string positiveMS, string neutralMS, string negativeMS, string showMS) {
-//				m_AndroidPluguin.ShowDialog("ShowMessage", "NativeDialog", "Select", "Toast", "Neutoral", "no", "Android");
-//				// Native
-//			});
-//		}
+		if (GetNativeButton() != null) 
+		{
+			GetNativeButton().onClick.AddListener(() => {
+				MyLog.I("click GetNativeButton");
+				if (null == m_AndroidPluguin) {
+					m_AndroidPluguin = gameObject.AddComponent<AndroidPlugin>();
+					MyLog.I("add AndroidPlugin");
+				}
+				// ShowDialog(string method, string title, string message, 
+				// string positiveMS, string neutralMS, string negativeMS, string showMS) {
+				m_AndroidPluguin.ShowDialog("ShowMessage", "NativeDialog", "Select", "Toast", "Neutoral", "no", "Android");
+				// Native
+			});
+		}
 //		if (GetChangeButton() != null) 
 //		{
 //			GetChangeButton().onClick.AddListener(() => {
