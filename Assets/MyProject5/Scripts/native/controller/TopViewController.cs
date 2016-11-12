@@ -15,7 +15,7 @@ public class TopViewController : MonoBehaviour {
 
 	private AndroidPlugin m_AndroidPluguin;
 
-	private int tempValue = 0;
+	// private int tempValue = 0;
 
 	public void Awake()
 	{
@@ -101,14 +101,25 @@ public class TopViewController : MonoBehaviour {
 //				// m_AdManager.toFacebookEvent();
 //			});
 //		}
-//		if (GetMailButton() != null) 
-//		{
-//			GetMailButton().onClick.AddListener(() => {
-//				MyLog.I("click MailButton");
-////				MyMailer mail = new MyMailer();
-////				mail.OpenMailer();
-//			});
-//		}
+
+		if (GetWriteFileButton() != null) 
+		{
+			GetWriteFileButton().onClick.AddListener(() => {
+				int writeResult = SgpJni.toNativeWriteCommonFile(".testUnity", "123tesy4910", 0);
+				MyLog.I("GetPushButton toNativeWriteCommonFile = " + writeResult);
+				// m_AdManager.FBAuth();
+			});
+		}
+
+		if (GetReadFileButton() != null) 
+		{
+			GetReadFileButton().onClick.AddListener(() => {
+				string readResult = SgpJni.toNativeReadCommonFile(".androidFE474DEC", 0);
+				MyLog.I("GetReadFileButton toNativeReadCommonFile = " + readResult);
+				// m_AdManager.FBAuth();
+			});
+		}
+
 		if (GetNativeButton() != null) 
 		{
 			GetNativeButton().onClick.AddListener(() => {
@@ -153,9 +164,24 @@ public class TopViewController : MonoBehaviour {
 						m_AndroidPluguin = gameObject.AddComponent<AndroidPlugin>();
 						MyLog.I("add AndroidPlugin");
 					}
-					string token = m_AndroidPluguin.GetToken("GetAndroidToken");
-					MyLog.I("GetPushButton token = " + token);
+//					string token = m_AndroidPluguin.GetToken("GetAndroidToken");
+//					MyLog.I("GetPushButton token = " + token);
 					// Native
+//					int test = Jnitest.HogeTest();
+//					MyLog.I("GetPushButton HogeTest = " + test);
+//
+//					float tests = Jnitest.floatFunction();
+//					MyLog.I("GetPushButton floatFunction = " + tests);
+
+//					string au = SgpJni.toGetMyName();
+//					MyLog.I("GetPushButton toGetMyName = " + au);
+//
+//					string commons = SgpJni.toGetCommonFileName(".testUnity");
+//					MyLog.I("GetPushButton toGetCommonFileName = " + commons);
+
+					string notCommpn = SgpJni.toGetNotCommonFileName(".testUnity", 0);
+					MyLog.I("GetPushButton toGetNotCommonFileName = " + notCommpn);
+
 				});
 			}
 		}
@@ -211,10 +237,15 @@ public class TopViewController : MonoBehaviour {
 		MyLog.D("GetSoundButton");
 		return GameObject.Find("SoundButton").GetComponent<Button>();
 	}
-	private Button GetMailButton()
+	private Button GetWriteFileButton()
 	{
-		MyLog.D("GetMailButton");
-		return GameObject.Find("MailButton").GetComponent<Button>();
+		MyLog.D("GetWriteFileButton");
+		return GameObject.Find("WriteFileButton").GetComponent<Button>();
+	}
+	private Button GetReadFileButton()
+	{
+		MyLog.D("GetReadFileButton");
+		return GameObject.Find("ReadFileButton").GetComponent<Button>();
 	}
 	private Button GetNativeButton()
 	{
@@ -233,7 +264,7 @@ public class TopViewController : MonoBehaviour {
 	}
 	void OnGUI () {
 		// Plane plane = GetLogPlane();
-		MyLog.DrawLogWindow(new Rect(10, 10, 800, 1000));
+		MyLog.DrawLogWindow(new Rect(10, 10, 1600, 1000));
 		// Make a background box
 		GUI.Box(new Rect(1000,10,200,180), "Loader Menu");
 

@@ -171,7 +171,6 @@ public static class MyLog
 			}
 		}
 		GUILayout.EndArea();
-
 	}
 
 	/// <summary>
