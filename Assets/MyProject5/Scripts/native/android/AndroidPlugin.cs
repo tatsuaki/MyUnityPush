@@ -35,7 +35,7 @@ public class AndroidPlugin : MonoBehaviour {
 
 	public void inits() {
 		if (Application.platform == RuntimePlatform.Android) {
-			MyLog.I("inits");
+			MyLog.I(TAG, "inits");
 			AndroidJavaClass nativePlugin = getStaticNativeClass();
 			AndroidJavaObject context  = getContext();
 
@@ -55,8 +55,8 @@ public class AndroidPlugin : MonoBehaviour {
 
 	public void ShowDialog(string method, string title, string message, 
 		string okMS, string nMS, string noMS, string showMS) {
-		MyLog.I("ShowDialog method = " + method + " title = " + title + " message = " + message);
-		MyLog.I("OKMS = " + okMS + " nMS = " + nMS + " noMS = " + noMS + " showMS " + showMS);
+		MyLog.I(TAG, "ShowDialog method = " + method + " title = " + title + " message = " + message);
+		MyLog.I(TAG, "OKMS = " + okMS + " nMS = " + nMS + " noMS = " + noMS + " showMS " + showMS);
 		#if UNITY_ANDROID
 
 		AndroidJavaClass nativePlugin = getStaticNativeClass();
@@ -83,18 +83,18 @@ public class AndroidPlugin : MonoBehaviour {
 	}
 
 	public int ChangeNative(string method, int before) {
-		MyLog.I("ChangeNative method = " + method + " before = " + before);
+		MyLog.I(TAG, "ChangeNative method = " + method + " before = " + before);
 		int after = 0;
 		#if UNITY_ANDROID
 		AndroidJavaObject nativePlugin = getNativeObject();
 		after = nativePlugin.Call<int>(method, before);
-		MyLog.I("ChangeNative after = " + after);
+		MyLog.I(TAG, "ChangeNative after = " + after);
 		#endif
 		return after;
 	}
 
 	public string GetToken(string method) {
-		MyLog.I(TAG + " GetToken method = " + method);
+		MyLog.I(TAG, "GetToken method = " + method);
 		string tokens = null;
 		#if UNITY_ANDROID
 		AndroidJavaClass nativePlugin = getStaticNativeClass();
@@ -102,7 +102,7 @@ public class AndroidPlugin : MonoBehaviour {
 
 		context.Call ("runOnUiThread", new AndroidJavaRunnable(() => {
 			tokens = nativePlugin.CallStatic<string> (method, context);
-			MyLog.W(TAG + " GetToken tokens = " + tokens);
+			MyLog.W(TAG,"GetToken tokens = " + tokens);
 		}));
 		#endif
 		return tokens;

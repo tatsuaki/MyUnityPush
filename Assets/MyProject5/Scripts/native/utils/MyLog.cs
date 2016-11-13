@@ -73,11 +73,11 @@ public static class MyLog
 	#endregion
 
 	#region ///////////// ログ処理 /////////////
-	public static void V(string message, bool isConsole = true) { _Push(Level.Verbose, message, isConsole); }
-	public static void D(string message, bool isConsole = true) { _Push(Level.Debug, message, isConsole); }
-	public static void I(string message, bool isConsole = true) { _Push(Level.Information, message, isConsole); }
-	public static void W(string message, bool isConsole = true) { _Push(Level.Warning, message, isConsole); }
-	public static void E(string message, bool isConsole = true) { _Push(Level.Error, message, isConsole); }
+	public static void V(string tag, string message, bool isConsole = true) { _Push(Level.Verbose, message, isConsole); }
+	public static void D(string tag, string message, bool isConsole = true) { _Push(Level.Debug, message, isConsole); }
+	public static void I(string tag, string message, bool isConsole = true) { _Push(Level.Information, message, isConsole); }
+	public static void W(string tag, string message, bool isConsole = true) { _Push(Level.Warning, message, isConsole); }
+	public static void E(string tag, string message, bool isConsole = true) { _Push(Level.Error, message, isConsole); }
 
 	/// <summary>
 	/// ログを画面上に表示する

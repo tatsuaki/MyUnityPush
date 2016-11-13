@@ -7,13 +7,26 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class TopViewController : MonoBehaviour {
+	private const string TAG = "TopViewController";
 
 //	private MyIAPHelper m_IAPHelper;
 //	private MyAdManager m_AdManager;
 
 	private MySoundManager m_Sound;
 
+	#if UNITY_ANDROID
 	private AndroidPlugin m_AndroidPluguin;
+	#endif
+
+	// private HttpCreateTask        m_HttpTask;
+	private HttpGetTask           m_HttpGetTask;
+	private HttpGetOnlyFbTask     m_HttpGetOnlyFbTask;
+	private HttpGetWithFbTask     m_HttpGetWithFbTask;
+
+	private HttpLinkTask          m_HttpLinkTaskk;
+	private HttpCreateOnlyFbTask  m_HttpCreateOnlyFbTask;
+
+	private HttpBaseTask          m_HttpTask;
 
 //	public static string m_FileName = ".testJni2Unity";
 //	public static string m_DeleteFileName = ".testJni2Unity";
@@ -32,9 +45,17 @@ public class TopViewController : MonoBehaviour {
 	public static string m_Sol_STG      = ".androidFE474DECS";
 	public static string m_Sol_DEV      = ".androidFE474DECD";
 
+//	public static string m_Sol_Name     = ".android66fa9d87";
+//	public static string m_Sol_STG      = ".android66fa9d87s";
+//	public static string m_Sol_DEV      = ".android66fa9d87d";
+
+//	public static string m_Sol_Name     = "";
+//	public static string m_Sol_STG      = "";
+//	public static string m_Sol_DEV      = "";
+
 	public void Awake()
 	{
-		MyLog.D("TopViewController Awake start");
+		MyLog.D(TAG, "TopViewController Awake start");
 		// Google or Apple
 //		m_IAPHelper = MyIAPHelper.Instance;
 //		m_AdManager = MyAdManager.Instance;
@@ -42,7 +63,7 @@ public class TopViewController : MonoBehaviour {
 		#if UNITY_ANDROID
 		if (null == m_AndroidPluguin) {
 			m_AndroidPluguin = gameObject.AddComponent<AndroidPlugin>();
-			MyLog.I("add AndroidPlugin");
+			MyLog.I(TAG, "add AndroidPlugin");
 		}
 		m_AndroidPluguin.inits();
 		#endif
@@ -51,7 +72,7 @@ public class TopViewController : MonoBehaviour {
 
 	private void InitUI()
 	{
-		MyLog.I("InitUI");
+		MyLog.I(TAG, "InitUI");
 		// FB.Init(this.OnInitComplete, this.OnHideUnity);
 
 //		if (GetStartButton() != null) 
@@ -125,156 +146,225 @@ public class TopViewController : MonoBehaviour {
 		if (GetCommonWriteFileButton() != null) 
 		{
 			GetCommonWriteFileButton().onClick.AddListener(() => {
+				#if UNITY_ANDROID
 				int writeResult = SgpJni.CallnativeWriteFile(m_FileName, "CallNativeWriteCommonFile", Common, Staging);
-				MyLog.I("GetNativeWriteButton CallnativeWriteFile writeResult = " + writeResult);
+				MyLog.I(TAG, "GetNativeWriteButton CallnativeWriteFile writeResult = " + writeResult);
+				#endif
 			});
 		}
 		if (GetNativeReadButton() != null) 
 		{
 			GetNativeReadButton().onClick.AddListener(() => {
+				#if UNITY_ANDROID
 				string commonResurl = SgpJni.CallNativeReadFile(m_FileName, Common, Staging);
-				MyLog.I("GetNativeReadButton CallNativeReadFile commonResurl = " + commonResurl);
+				MyLog.I(TAG, "GetNativeReadButton CallNativeReadFile commonResurl = " + commonResurl);
 
 				string NotCommonResurl = SgpJni.CallNativeReadFile(m_FileName, NotCommon, Staging);
-				MyLog.I("GetNativeReadButton CallNativeReadFile NotCommonResurl = " + NotCommonResurl);
-				// m_AdManager.FBAuth();
+				MyLog.I(TAG, "GetNativeReadButton CallNativeReadFile NotCommonResurl = " + NotCommonResurl);
+				#endif
 			});
 		}
 
 		if (GetNativeWriteButton() != null)
 		{
 			GetNativeWriteButton().onClick.AddListener(() => {
+				#if UNITY_ANDROID
 				// int nativeWriteFile(const char* filename, char* text, int common, int svno);
 				int commonResurl = SgpJni.CallnativeWriteFile(m_FileName, "common_CallnativeWriteFile", Common, Staging);
-				MyLog.I("GetNativeWriteButton CallnativeWriteFile commonResurl = " + commonResurl);
+				MyLog.I(TAG, "GetNativeWriteButton CallnativeWriteFile commonResurl = " + commonResurl);
 
 				int NotCommonResurl = SgpJni.CallnativeWriteFile(m_FileName, "1234test567890", NotCommon, Staging);
-				MyLog.I("GetNativeWriteButton CallnativeWriteFile NotCommonResurl = " + NotCommonResurl);
-				// m_AdManager.FBAuth();
+				MyLog.I(TAG, "GetNativeWriteButton CallnativeWriteFile NotCommonResurl = " + NotCommonResurl);
+				#endif
 			});
 		}
 
 		if (GetSolReadButton() != null) 
 		{
 			GetSolReadButton().onClick.AddListener(() => {
-				string readResult = SgpJni.CallnativeSolReadFile(m_Sol_Name, Common, Release);
-				MyLog.I("nativeSolReadFile readResult = " + readResult);
+				#if UNITY_ANDROID
+				string releaseCommon = SgpJni.CallnativeSolReadFile(m_Sol_Name, Common, Release);
+				MyLog.I(TAG, "nativeSolReadFile releaseCommon = " + releaseCommon);
+				// TODO 加工
 
-				string readStg = SgpJni.CallnativeSolReadFile(m_Sol_STG, Common, Staging);
-				MyLog.I("nativeSolReadFile readStg = " + readStg);
+				string releaseNotCommon = SgpJni.CallnativeSolReadFile(m_Sol_Name, NotCommon, Release);
+				MyLog.I(TAG, "nativeSolReadFile releaseNotCommon = " + releaseNotCommon);
 
-				string readDev = SgpJni.CallnativeSolReadFile(m_Sol_DEV, Common, Develop);
-				MyLog.I("nativeSolReadFile readDev = " + readDev);
+				string stagingCommon = SgpJni.CallnativeSolReadFile(m_Sol_STG, Common, Staging);
+				MyLog.I(TAG, "nativeSolReadFile stagingCommon= " + stagingCommon);
 
-				string readResult2 = SgpJni.CallnativeSolReadFile(m_Sol_Name, NotCommon, Release);
-				MyLog.I("nativeSolReadFile readResult2 = " + readResult2);
+				string stagingNotCommon = SgpJni.CallnativeSolReadFile(m_Sol_STG, NotCommon, Staging);
+				MyLog.I(TAG, "nativeSolReadFile stagingNotCommon = " + stagingNotCommon);
 
-				string readStg2 = SgpJni.CallnativeSolReadFile(m_Sol_STG, NotCommon, Staging);
-				MyLog.I("nativeSolReadFile readStg2 = " + readStg2);
+				string developCommon = SgpJni.CallnativeSolReadFile(m_Sol_DEV, Common, Develop);
+				MyLog.I(TAG, "nativeSolReadFile developCommon = " + developCommon);
 
-				string readDev2 = SgpJni.CallnativeSolReadFile(m_Sol_DEV, NotCommon, Develop);
-				MyLog.I("nativeSolReadFile readDev2 = " + readDev2);
+				string developNotCommon = SgpJni.CallnativeSolReadFile(m_Sol_DEV, NotCommon, Develop);
+				MyLog.I(TAG, "nativeSolReadFile developNotCommon = " + developNotCommon);
+				#endif
 			});
 		}
 		if (GetUAButton() != null) 
 		{
 			GetUAButton().onClick.AddListener(() => {
+				#if UNITY_ANDROID
 				string readResult = SgpJni.CallnativeGetUserAgent();
-				MyLog.W("GetUAButton CallnativeGetUserAgent = " + readResult);
+				MyLog.W(TAG, "GetUAButton CallnativeGetUserAgent = " + readResult);
+				#endif
 			});
 		}
 
 		if (GetFilePathButton() != null) 
 		{
 			GetFilePathButton().onClick.AddListener(() => {
+				#if UNITY_ANDROID
 				string common = SgpJni.CallgGetFileNameToUnity(m_FileName, Common, Staging);
-				MyLog.W("CallgGetFileNameToUnity common = " + common);
+				MyLog.W(TAG,"CallgGetFileNameToUnity common = " + common);
 
 				string notCommon = SgpJni.CallgGetFileNameToUnity(m_FileName, NotCommon, Staging);
-				MyLog.W("CallgGetFileNameToUnity notCommon = " + notCommon);
+				MyLog.W(TAG,"CallgGetFileNameToUnity notCommon = " + notCommon);
+				#endif
 			});
 		}
 		if (GetCheckButton() != null) 
 		{
 			GetCheckButton().onClick.AddListener(() => {
+				#if UNITY_ANDROID
 				int check = SgpJni.CallnativeCheckNT();
-				MyLog.W("CallnativeCheckNT = " + check);
+				MyLog.W(TAG,"CallnativeCheckNT = " + check);
 
 				string test = SgpJni.CallnativeTest();
-				MyLog.W("CallnativeTest test = " + test);
-
+				MyLog.W(TAG,"CallnativeTest test = " + test);
+				#endif
 			});
 		}
 		if (GetDeleteButton() != null) 
 		{
 			GetDeleteButton().onClick.AddListener(() => {
+				#if UNITY_ANDROID
 				int common = SgpJni.CallNativeDeleteFile(m_DeleteFileName, Common, Staging);
-				MyLog.W("GetDeleteButton GetDeleteButton = " + common);
+				MyLog.W(TAG, "GetDeleteButton GetDeleteButton = " + common);
 
 				int notCommon = SgpJni.CallNativeDeleteFile(m_DeleteFileName, NotCommon, Staging);
-				MyLog.W("GetDeleteButton GetDeleteButton = " + notCommon);
+				MyLog.W(TAG, "GetDeleteButton GetDeleteButton = " + notCommon);
+				#endif
 			});
 		}
 		if (GetNativeButton() != null) 
 		{
 			GetNativeButton().onClick.AddListener(() => {
-				MyLog.I("click GetNativeButton");
+				#if UNITY_ANDROID
+				MyLog.I(TAG, "click GetNativeButton");
 				if (null == m_AndroidPluguin) {
 					m_AndroidPluguin = gameObject.AddComponent<AndroidPlugin>();
-					MyLog.I("add AndroidPlugin");
+					MyLog.I(TAG, "add AndroidPlugin");
 				}
 				// ShowDialog(string method, string title, string message, 
 				// string positiveMS, string neutralMS, string negativeMS, string showMS) {
 				m_AndroidPluguin.ShowDialog("ShowMessage", "NativeDialog", "Select", "Toast", "Neutoral", "no", "Android");
-				// Native
+				#endif
 			});
 		}
-//		if (GetChangeButton() != null) 
-//		{
-//			GetChangeButton().onClick.AddListener(() => {
-//				MyLog.I("click GetChangeButton");
-//				if (null == m_AndroidPluguin) {
-//					m_AndroidPluguin = gameObject.AddComponent<AndroidPlugin>();
-//					MyLog.I("add AndroidPlugin");
-//				}
-//				Button button = GetChangeButton();
-//				Text text = button.GetComponentInChildren<Text>();
-//
-//				if (tempValue == 0) {
-//					tempValue = 3;
-//				}
-//				int after = m_AndroidPluguin.ChangeNative("ChangeValue", tempValue);
-//				text.text = "after = " + after;
-//				tempValue = after;
-//				MyLog.I("Top after = " + after);
-//				// Native
-//			});
-//		}
 
 		if (GetPushButton() != null) 
 		{
-			if (Application.platform == RuntimePlatform.Android) {
 				GetPushButton().onClick.AddListener(() => {
-					MyLog.I("click GetPushButton");
-					if (null == m_AndroidPluguin) {
-						m_AndroidPluguin = gameObject.AddComponent<AndroidPlugin>();
-						MyLog.I("add AndroidPlugin");
-					}
-					string token = m_AndroidPluguin.GetToken("GetAndroidToken");
-					MyLog.I("GetPushButton token = " + token);
+				#if UNITY_ANDROID
+				MyLog.I(TAG, "click GetPushButton");
+				if (null == m_AndroidPluguin) {
+					m_AndroidPluguin = gameObject.AddComponent<AndroidPlugin>();
+					MyLog.I(TAG, "add AndroidPlugin");
+				}
+				string token = m_AndroidPluguin.GetToken("GetAndroidToken");
+				MyLog.I(TAG, "GetPushButton token = " + token);
 				});
+				#endif
+		}
+		if (GetCreateButton() != null) 
+		{
+			GetCreateButton().onClick.AddListener(() => {
+				#if UNITY_ANDROID
+				authTask();
+				#endif
+			});
+		}
+	}
+
+	// 認証関連
+	public void authTask() {
+		MyLog.I(TAG, "authTask start");
+
+		// nativeからauth term取得
+
+		// TO jni
+
+		// FinishApi {"entry":{"appId":"95","authCode":"GJEJx0hhNa","gamecenterId":"",
+		// "googleId":"","facebook_id":"105177593297634","invitationCode":"EtTe64bt4N","
+		// termId":"6ui8qsNNzE","invitationId":"","userType":"0","status":"0"}}
+
+
+		MyUser user = new MyUser();
+		string authCode = "";
+		string termId = "";
+		string facebookId = "";
+		user.Initialize(authCode, termId, facebookId);
+		// user.Initialize("", "", "105177593297634"); // ok
+		MyLog.W(TAG, "HttpManager MyUser Initialize");
+
+		user.checkValue();
+		string build = user.GetAppVersionName_Android();
+		MyLog.W(TAG, "HttpManager MyUser build = " + build);
+
+		// TODO 実行API判定
+		if (authCode == string.Empty) {
+			MyLog.I(TAG, "authCode null");
+			if (facebookId == string.Empty) {
+				MyLog.I(TAG, "facebookId null to HttpCreateTask");
+				m_HttpTask = (HttpCreateTask)gameObject.AddComponent<HttpCreateTask>();
+				m_HttpTask.ExecApiTask(user);
+			} else {
+				MyLog.I(TAG, "facebookId 存在 to HttpGetOnlyFbTask");
+				m_HttpTask = (HttpGetOnlyFbTask)gameObject.AddComponent<HttpGetOnlyFbTask>();
+				m_HttpTask.ExecApiTask(user);
+			}
+		} else {
+			MyLog.I(TAG, "authCode 存在 to HttpGetTask");
+			if (facebookId == string.Empty) {
+				MyLog.I(TAG, "facebookId null");
+				m_HttpTask = (HttpGetTask)gameObject.AddComponent<HttpGetTask>();
+				m_HttpTask.ExecApiTask(user);
+			} else {
+				MyLog.I(TAG, "facebookId 存在 to HttpGetWithFbTask");
+				m_HttpTask = (HttpGetWithFbTask)gameObject.AddComponent<HttpGetWithFbTask>();
+				m_HttpTask.ExecApiTask(user);
 			}
 		}
+		// auth無 fb有
+		// m_HttpTask = (HttpCreateOnlyFbTask)gameObject.AddComponent<HttpCreateOnlyFbTask>();
+		// m_HttpTask.ExecApiTask(user);
+
+		// auth無 fb有
+		// m_HttpTask = (HttpLinkTask)gameObject.AddComponent<HttpLinkTask>();
+		// m_HttpTask.ExecApiTask(user);
+		// 端末保存
+
+		// 広告SDK
+
+		// MyPage遷移
+	}
+
+	public static void HttpTaskFinishedDelegate(string statusCode, object sender, EventArgs e){
+		MyLog.I(TAG, "HttpTaskFinishedDelegate " + (string)sender);
 	}
 
 	public void Start()
 	{
-		MyLog.I("TopViewController start");
+		MyLog.I(TAG, "start");
 		// m_AdManager.OnStart();
 	}
 
 	public static void FinishPurchaseEvent(object sender, EventArgs e){
-		MyLog.I("FinishPurchaseEvent " + sender);
+		MyLog.I(TAG, "FinishPurchaseEvent " + sender);
 		// MyAdManager.EndPurchase((String)sender);
 	}
 
@@ -286,91 +376,79 @@ public class TopViewController : MonoBehaviour {
 
 	private Button GetBuyButton()
 	{
-		MyLog.D("GetBuyButton");
 		return GameObject.Find("BuyButton").GetComponent<Button>();
 	}
 	private Button GetTapjoyButton()
 	{
-		MyLog.D("GetTapjoyButton");
 		return GameObject.Find("TapjoyButton").GetComponent<Button>();
 	}
 	private Button GetFacebookButton()
 	{
-		MyLog.D("GetFacebookButton");
 		return GameObject.Find("FacebookButton").GetComponent<Button>();
 	}
 	private Button GetStartButton()
 	{
-		MyLog.D("GetStartButton");
 		return GameObject.Find("StartButton").GetComponent<Button>();
 	}
 	private Button GetMovieButton()
 	{
-		MyLog.D("GetMovieButton");
 		return GameObject.Find("MovieButton").GetComponent<Button>();
 	}
 	private Button GetSoundButton()
 	{
-		MyLog.D("GetSoundButton");
 		return GameObject.Find("SoundButton").GetComponent<Button>();
 	}
 	private Button GetCommonWriteFileButton()
 	{
-		MyLog.D("GetCommonWriteFileButton");
 		return GameObject.Find("CommonWriteFileButton").GetComponent<Button>();
 	}
 	private Button GetSolReadButton()
 	{
-		MyLog.D("GetSolReadButton");
 		return GameObject.Find("SolReadButton").GetComponent<Button>();
 	}
 	private Button GetNativeButton()
 	{
-		MyLog.D("GetNativeButton");
 		return GameObject.Find("NativeButton").GetComponent<Button>();
 	}
 	private Button GetChangeButton()
 	{
-		MyLog.D("GetChangeButton");
 		return GameObject.Find("ChangeButton").GetComponent<Button>();
 	}
 	private Button GetPushButton()
 	{
-		MyLog.D("GetPushButton");
 		return GameObject.Find("PushButton").GetComponent<Button>();
 	}
 	private Button GetUAButton()
 	{
-		MyLog.D("GetUAButton");
 		return GameObject.Find("UAButton").GetComponent<Button>();
 	}
 	private Button GetFilePathButton()
 	{
-		MyLog.D("GetFilePathButton");
 		return GameObject.Find("FilePathButton").GetComponent<Button>();
 	}
 	private Button GetCheckButton()
 	{
-		MyLog.D("GetCheckButton");
 		return GameObject.Find("CheckButton").GetComponent<Button>();
 	}
 
 	private Button GetDeleteButton()
 	{
-		MyLog.D("GetDeleteButton");
 		return GameObject.Find("DeleteButton").GetComponent<Button>();
 	}
 
 	private Button GetNativeReadButton()
 	{
-		MyLog.D("GetNativeReadButton");
 		return GameObject.Find("NativeReadButton").GetComponent<Button>();
 	}
 
 	private Button GetNativeWriteButton()
 	{
-		MyLog.D("GetNativeWriteButton");
 		return GameObject.Find("NativeWriteButton").GetComponent<Button>();
+	}
+
+	private Button GetCreateButton()
+	{
+		return GameObject.Find("CreateButton").GetComponent<Button>();
 	}
 
 	void OnGUI () {
@@ -390,4 +468,3 @@ public class TopViewController : MonoBehaviour {
 		}
 	}
 }
-

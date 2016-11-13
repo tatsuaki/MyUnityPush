@@ -73,6 +73,8 @@ public class SgpJni {
 		IntPtr pResult = nativeGetUserAgent();
 		string result = Marshal.PtrToStringAnsi(pResult);
 		Marshal.FreeHGlobal(pResult);
+
+		result += " Build:"+ GetAppversionCode_Android();		 
 		Debug.Log("CallnativeGetUserAgent = " + result);
 		return result;
 	}
@@ -135,5 +137,26 @@ public class SgpJni {
 		Marshal.FreeHGlobal(pFilename);
 		Debug.Log("CallgGetFileNameToUnity = " + result);
 		return result;
+	}
+
+	public static int GetAppversionCode_Android ()
+	{
+		AndroidJavaObject   pInfo       = GetPackageInfo();
+		int versionCode = pInfo.Get<int>( "versionCode" );
+		return versionCode;
+	}
+
+	public static string GetAppVersionName_Android ()
+	{
+		AndroidJavaObject   pInfo       = GetPackageInfo();
+		string versionName = pInfo.Get<string>( "versionName" );
+		return versionName;
+	}
+	public static AndroidJavaObject GetPackageInfo () {
+		AndroidJavaClass    unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+		AndroidJavaObject   context     = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity").Call<AndroidJavaObject>("getApplicationContext");
+		AndroidJavaObject   pManager    = context.Call<AndroidJavaObject>("getPackageManager");
+		AndroidJavaObject   pInfo       = pManager.Call<AndroidJavaObject>( "getPackageInfo", context.Call<string>("getPackageName"), pManager.GetStatic<int>("GET_ACTIVITIES") );
+		return pInfo;
 	}
 }

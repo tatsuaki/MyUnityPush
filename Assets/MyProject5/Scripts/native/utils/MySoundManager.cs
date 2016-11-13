@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class MySoundManager : MonoBehaviour {
+	private const string TAG = "MySoundManager";
 
 	//音声ファイル格納用変数
 	public AudioClip sound01;
@@ -10,7 +11,7 @@ public class MySoundManager : MonoBehaviour {
 	private AudioSource audioSource;
 
 	void Start() {
-		MyLog.I("MySoundManager Start");
+		MyLog.I(TAG, "Start");
 		audioSource = gameObject.GetComponent<AudioSource>();
 	}
 	void Update () {
@@ -24,13 +25,13 @@ public class MySoundManager : MonoBehaviour {
 	}
 
 	public void playSound1() {
-		MyLog.I("playSound1");
+		MyLog.I(TAG, "playSound1");
 		audioSource.clip = sound01;
 		audioSource.PlayOneShot(sound01);
 	}
 
 	public void playSound2() {
-		MyLog.I("playSound2");
+		MyLog.I(TAG, "playSound2");
 		audioSource.clip = sound02;
 		audioSource.PlayOneShot(sound02);
 		// GetComponent<AudioSource>().PlayOneShot(sound02);
