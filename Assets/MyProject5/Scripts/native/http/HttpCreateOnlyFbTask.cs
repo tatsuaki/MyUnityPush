@@ -10,7 +10,7 @@ public class HttpCreateOnlyFbTask : HttpBaseTask {
 	private const string url = "https://ozef.stg.shall-we-date.com/OZEF/sgp/create/";
 
 	public override void ExecApiTask(MyUser user) {
-		MyLog.E(TAG, "ExecApiTask");
+		MyLog.D(TAG, "ExecApiTask");
 
 		// サーバへPOSTするデータを設定 
 		Dictionary<string, string> status = user.m_status;
@@ -18,7 +18,7 @@ public class HttpCreateOnlyFbTask : HttpBaseTask {
 		status.Add ("warningDevice", "0");
 		foreach (KeyValuePair<string, string> pair in status)
 		{
-			MyLog.I(TAG, "param = " + pair.Key + " " + pair.Value);
+			MyLog.I(TAG, pair.Key + " : " + pair.Value);
 		}
 		StartCoroutine(requestHttp(url, status));
 	}
@@ -26,7 +26,7 @@ public class HttpCreateOnlyFbTask : HttpBaseTask {
 	// HTTP POST リクエスト
 	public override  IEnumerator requestHttp(string url, Dictionary<string, string> post)
 	{
-		MyLog.E(TAG, "requestHttp");
+		MyLog.D(TAG, "requestHttp");
 		string status = "-1";
 
 		WWWForm form = new WWWForm();
@@ -40,9 +40,9 @@ public class HttpCreateOnlyFbTask : HttpBaseTask {
 
 		Dictionary<string, string> array = www.responseHeaders;
 		status = getStatus(array);
-		MyLog.E(TAG, "STATUS = " + status);
-		MyLog.E(TAG, www.error);
-		MyLog.E(TAG, www.text);
+		MyLog.W(TAG, "STATUS = " + status);
+		MyLog.E(TAG, "error " + www.error);
+		MyLog.W(TAG, "www.text = " + www.text);
 		httpTaskFinishedDelegate = TopViewController.HttpTaskFinishedDelegate;
 		if (status.Equals(CREATE_SUCCESS)) {			
 			httpTaskFinishedDelegate(CREATE_SUCCESS, www.text, null);
@@ -58,3 +58,6 @@ public class HttpCreateOnlyFbTask : HttpBaseTask {
 		}
 	} 
 }
+
+// 201
+// {"entry":{"authCode":"6oP9XqUo7G","termId":"v7nvJdh08H","invitationCode":"J0Z1UgZ6cN"}}

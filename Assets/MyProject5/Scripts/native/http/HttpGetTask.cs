@@ -20,7 +20,7 @@ public class HttpGetTask : HttpBaseTask {
 	// "userType":"0","status":"0"}}
 
 	public override void ExecApiTask(MyUser user) {
-		MyLog.E(TAG, "StartGetTask");
+		MyLog.D(TAG, "StartGetTask");
 		// サーバへPOSTするデータを設定 
 		Dictionary<string, string> status = user.m_status;
 		status.Add ("marketType", "2");
@@ -28,15 +28,14 @@ public class HttpGetTask : HttpBaseTask {
 		StartCoroutine(requestHttp(url, status));
 		foreach (KeyValuePair<string, string> pair in status)
 		{
-			MyLog.I(TAG, "param = " + pair.Key + " " + pair.Value);
+			MyLog.I(TAG, pair.Key + " : " + pair.Value);
 		}
-		MyLog.E(TAG, "StartGetTask after");
 	}
 
 	// HTTP POST リクエスト
 	public override IEnumerator requestHttp(string url, Dictionary<string, string> post)
 	{
-		MyLog.E(TAG, "requestHttp");
+		MyLog.D(TAG, "requestHttp");
 		string status = "-1";
 
 		WWWForm form = new WWWForm();
@@ -50,9 +49,9 @@ public class HttpGetTask : HttpBaseTask {
 
 		Dictionary<string, string> array = www.responseHeaders;
 		status = getStatus(array);
-		MyLog.E(TAG, "STATUS = " + status);
-		MyLog.E(TAG, www.error);
-		MyLog.E(TAG, www.text);
+		MyLog.W(TAG, "STATUS = " + status);
+		MyLog.E(TAG, "error " + www.error);
+		MyLog.W(TAG, "www.text = " + www.text);
 
 		httpTaskFinishedDelegate = TopViewController.HttpTaskFinishedDelegate;
 		if (status.Equals(GET_SUCCESS)) { // 200

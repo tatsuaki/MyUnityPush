@@ -9,6 +9,8 @@ public class HttpGetOnlyFbTask : HttpBaseTask {
 	// URL
 	private const string url = "https://ozef.stg.shall-we-date.com/OZEF/sgp/get/";
 
+	public MyUser tmpUser;
+
 	// https://ozef.stg.shall-we-date.com/OZEF/sgp/get/ param 
 	// [marketType=2, termId=Tv5ujQDdBU, authCode=GJEJx0hhNa, warningDevice=0]
 
@@ -20,14 +22,16 @@ public class HttpGetOnlyFbTask : HttpBaseTask {
 	// "userType":"0","status":"0"}}
 
 	public override void ExecApiTask(MyUser user) {
-		MyLog.E(TAG, "ExecApiTask");
+		MyLog.D(TAG, "ExecApiTask");
+
+		tmpUser = user;
 		// サーバへPOSTするデータを設定 
 		Dictionary<string, string> status = user.m_status;
 		status.Add ("marketType", "2");
 		status.Add ("warningDevice", "0");
 		foreach (KeyValuePair<string, string> pair in status)
 		{
-			MyLog.I(TAG, "param = " + pair.Key + " " + pair.Value);
+			MyLog.I(TAG, pair.Key + " : " + pair.Value);
 		}
 		StartCoroutine(requestHttp(url, status));
 	}
@@ -35,7 +39,7 @@ public class HttpGetOnlyFbTask : HttpBaseTask {
 	// HTTP POST リクエスト
 	public override IEnumerator requestHttp(string url, Dictionary<string, string> post)
 	{
-		MyLog.E(TAG, "requestHttp");
+		MyLog.D(TAG, "requestHttp");
 		string status = "-1";
 
 		WWWForm form = new WWWForm();
@@ -49,16 +53,18 @@ public class HttpGetOnlyFbTask : HttpBaseTask {
 
 		Dictionary<string, string> array = www.responseHeaders;
 		status = getStatus(array);
-		MyLog.E(TAG, "STATUS = " + status);
-		MyLog.E(TAG, www.error);
-		MyLog.E(TAG, www.text);
+		MyLog.W(TAG, "STATUS = " + status);
+		MyLog.E(TAG, "error " + www.error);
+		MyLog.W(TAG, "www.text = " + www.text);
 
 		httpTaskFinishedDelegate = TopViewController.HttpTaskFinishedDelegate;
 		if (status.Equals(GET_SUCCESS)) { // 200
 			httpTaskFinishedDelegate(GET_SUCCESS, www.text, null);
-		} else if (status.Equals(NO_SUCCESS)){ // 404
+		} else if (status.Equals(NO_SUCCESS)){ // 404 → HttpCreateOnlyFbTask
 			// to create(FB)
-			httpTaskFinishedDelegate(NO_SUCCESS, null, null);
+			HttpCreateOnlyFbTask m_HttpTask = gameObject.AddComponent<HttpCreateOnlyFbTask>();
+			m_HttpTask.ExecApiTask(tmpUser);
+			// httpTaskFinishedDelegate(NO_SUCCESS, null, null);
 		} else if (status.Equals("MAINTENANCE")){
 			httpTaskFinishedDelegate("555", null, null);
 		} else {
@@ -66,6 +72,8 @@ public class HttpGetOnlyFbTask : HttpBaseTask {
 		}
 	}
 }
+
+// termそのまま
 // user.Initialize("", "", "105177593297634"); ok
 // ↓ 200
 // FinishApi {"entry":{"appId":"95","authCode":"GJEJx0hhNa","gamecenterId":"",

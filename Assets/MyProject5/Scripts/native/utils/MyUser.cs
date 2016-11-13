@@ -10,16 +10,16 @@ public class MyUser : MonoBehaviour {
 	public void Initialize(string authCode, string termId, string facebookId, string googleId)
 	{
 		m_status = new Dictionary<string, string>();
-		if (null != authCode) {
+		if (!string.IsNullOrEmpty(authCode)) {
 			m_status.Add("authCode", authCode);
 		}
-		if (null != termId) {
-			m_status.Add("termId", termId);
-		}
-		if (null != facebookId) {
+		// 必須
+		m_status.Add("termId", termId);
+
+		if (!string.IsNullOrEmpty(facebookId)) {
 			m_status.Add("facebookId", facebookId); // レスポンスは facebook_id
 		}
-		if (null != googleId) {
+		if (!string.IsNullOrEmpty(googleId)) {
 			m_status.Add("googleId", googleId);
 		}
 	}
@@ -37,7 +37,7 @@ public class MyUser : MonoBehaviour {
 	public void checkValue()
 	{
 		foreach (string key in m_status.Keys) {
-			MyLog.W(TAG, "key = " + key + " value = " + m_status[key]);
+			MyLog.W(TAG, key + " : " + m_status[key]);
 		}
 	}
 

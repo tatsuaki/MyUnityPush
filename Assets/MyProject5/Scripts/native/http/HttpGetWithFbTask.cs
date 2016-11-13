@@ -8,6 +8,8 @@ public class HttpGetWithFbTask : HttpBaseTask {
 	// URL
 	private const string url = "https://ozef.stg.shall-we-date.com/OZEF/sgp/get/";
 
+	public MyUser tmpUser;
+
 	// https://ozef.stg.shall-we-date.com/OZEF/sgp/get/ param 
 	// [marketType=2, termId=Tv5ujQDdBU, authCode=GJEJx0hhNa, warningDevice=0]
 
@@ -19,7 +21,8 @@ public class HttpGetWithFbTask : HttpBaseTask {
 	// "userType":"0","status":"0"}}
 
 	public override void ExecApiTask(MyUser user) {
-		MyLog.E(TAG, "ExecApiTask");
+		MyLog.D(TAG, "ExecApiTask");
+		tmpUser = user;
 		// サーバへPOSTするデータを設定 
 		Dictionary<string, string> status = user.m_status;
 		status.Add ("marketType", "2");
@@ -27,15 +30,14 @@ public class HttpGetWithFbTask : HttpBaseTask {
 		StartCoroutine(requestHttp(url, status));
 		foreach (KeyValuePair<string, string> pair in status)
 		{
-			MyLog.I(TAG, "param = " + pair.Key + " " + pair.Value);
+			MyLog.I(TAG, pair.Key + " : " + pair.Value);
 		}
-		MyLog.E(TAG, "ExecApiTask after");
 	}
 
 	// HTTP POST リクエスト
 	public override IEnumerator requestHttp(string url, Dictionary<string, string> post)
 	{
-		MyLog.E(TAG, "requestHttp");
+		MyLog.D(TAG, "requestHttp");
 		string status = "-1";
 
 		WWWForm form = new WWWForm();
@@ -49,9 +51,9 @@ public class HttpGetWithFbTask : HttpBaseTask {
 
 		Dictionary<string, string> array = www.responseHeaders;
 		status = getStatus(array);
-		MyLog.E(TAG, "STATUS = " + status);
-		MyLog.E(TAG, www.error);
-		MyLog.E(TAG, www.text);
+		MyLog.W(TAG, "STATUS = " + status);
+		MyLog.E(TAG, "error " + www.error);
+		MyLog.W(TAG, "www.text = " + www.text);
 
 		httpTaskFinishedDelegate = TopViewController.HttpTaskFinishedDelegate;
 		if (status.Equals(GET_SUCCESS)) { // 200
@@ -62,9 +64,11 @@ public class HttpGetWithFbTask : HttpBaseTask {
 
 			// 同一    → 処理継続
 			httpTaskFinishedDelegate(GET_SUCCESS, www.text, null);
-		} else if (status.Equals(NO_SUCCESS)){ // 404
+		} else if (status.Equals(NO_SUCCESS)){ // 404 → HttpLinkTask
 			// to link
-			httpTaskFinishedDelegate(NO_SUCCESS, null, null);
+			HttpLinkTask m_HttpTask = gameObject.AddComponent<HttpLinkTask>();
+			m_HttpTask.ExecApiTask(tmpUser);
+			// httpTaskFinishedDelegate(NO_SUCCESS, null, null);
 		} else if (status.Equals("MAINTENANCE")){
 			httpTaskFinishedDelegate("555", null, null);
 		} else {

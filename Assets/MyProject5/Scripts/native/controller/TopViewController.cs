@@ -6,6 +6,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+using System.Diagnostics; // Conditional
+
 public class TopViewController : MonoBehaviour {
 	private const string TAG = "TopViewController";
 
@@ -250,9 +252,11 @@ public class TopViewController : MonoBehaviour {
 				#endif
 			});
 		}
+
 		if (GetNativeButton() != null) 
 		{
 			GetNativeButton().onClick.AddListener(() => {
+
 				#if UNITY_ANDROID
 				MyLog.I(TAG, "click GetNativeButton");
 				if (null == m_AndroidPluguin) {
@@ -291,6 +295,7 @@ public class TopViewController : MonoBehaviour {
 	}
 
 	// 認証関連
+	[Conditional( "UNITY_ANDROID" )]
 	public void authTask() {
 		MyLog.I(TAG, "authTask start");
 
@@ -304,44 +309,50 @@ public class TopViewController : MonoBehaviour {
 
 
 		MyUser user = new MyUser();
+//		string authCode = "I4XrTJps9a";
+		string termId = "LOB3LwzOZ";
 		string authCode = "";
-		string termId = "";
-		string facebookId = "";
+		//string termId = "";
+		string facebookId = "127301327745362";// 127301327745362
+		// "authCode":"6oP9XqUo7G","termId":"v7nvJdh08H"  // Gmxl
 		user.Initialize(authCode, termId, facebookId);
 		// user.Initialize("", "", "105177593297634"); // ok
 		MyLog.W(TAG, "HttpManager MyUser Initialize");
+		// "authCode":"6oP9XqUo7G","gamecenterId":"","googleId":"","facebook_id":"127301327745362","invitationCode":"J0Z1UgZ6cN",
+		// "termId":"v7nvJdh08H","invitationId":"","userType":"0","status":"0"}}
 
-		user.checkValue();
+		// "authCode":"6oP9XqUo7G","facebook_id":"127301327745362","invitationCode":"J0Z1UgZ6cN","termId":"v7nvJdh08H","invitationId":"","userType":"0","status":"0"}}
+
 		string build = user.GetAppVersionName_Android();
 		MyLog.W(TAG, "HttpManager MyUser build = " + build);
 
 		// TODO 実行API判定
-		if (authCode == string.Empty) {
-			MyLog.I(TAG, "authCode null");
-			if (facebookId == string.Empty) {
-				MyLog.I(TAG, "facebookId null to HttpCreateTask");
+		if (string.IsNullOrEmpty(authCode)) {
+			MyLog.I(TAG, "authCode IsNullOrEmpty");
+			if (string.IsNullOrEmpty(facebookId)) {
+				MyLog.I(TAG, "facebookId IsNullOrEmpty to HttpCreateTask");
 				m_HttpTask = (HttpCreateTask)gameObject.AddComponent<HttpCreateTask>();
 				m_HttpTask.ExecApiTask(user);
 			} else {
-				MyLog.I(TAG, "facebookId 存在 to HttpGetOnlyFbTask");
+				MyLog.I(TAG, "facebookId ! IsNullOrEmpty to HttpGetOnlyFbTask");
 				m_HttpTask = (HttpGetOnlyFbTask)gameObject.AddComponent<HttpGetOnlyFbTask>();
 				m_HttpTask.ExecApiTask(user);
 			}
 		} else {
-			MyLog.I(TAG, "authCode 存在 to HttpGetTask");
-			if (facebookId == string.Empty) {
-				MyLog.I(TAG, "facebookId null");
+			MyLog.I(TAG, "authCode ! IsNullOrEmpty");
+			if (string.IsNullOrEmpty(facebookId)) {
+				MyLog.I(TAG, "facebookId IsNullOrEmpty to HttpGetTask");
 				m_HttpTask = (HttpGetTask)gameObject.AddComponent<HttpGetTask>();
 				m_HttpTask.ExecApiTask(user);
 			} else {
-				MyLog.I(TAG, "facebookId 存在 to HttpGetWithFbTask");
+				MyLog.I(TAG, "facebookId ! IsNullOrEmpty to HttpGetWithFbTask");
 				m_HttpTask = (HttpGetWithFbTask)gameObject.AddComponent<HttpGetWithFbTask>();
 				m_HttpTask.ExecApiTask(user);
 			}
 		}
 		// auth無 fb有
-		// m_HttpTask = (HttpCreateOnlyFbTask)gameObject.AddComponent<HttpCreateOnlyFbTask>();
-		// m_HttpTask.ExecApiTask(user);
+//		 m_HttpTask = (HttpCreateOnlyFbTask)gameObject.AddComponent<HttpCreateOnlyFbTask>();
+//		 m_HttpTask.ExecApiTask(user);
 
 		// auth無 fb有
 		// m_HttpTask = (HttpLinkTask)gameObject.AddComponent<HttpLinkTask>();

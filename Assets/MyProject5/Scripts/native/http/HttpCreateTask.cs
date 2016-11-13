@@ -15,14 +15,14 @@ public class HttpCreateTask : HttpBaseTask {
 	// FinishApi {"entry":{"authCode":"XrUb3OLx2","termId":"go7icWGxv","invitationCode":"Ba6QjzDvLs"}}
 
 	public override void ExecApiTask(MyUser user) {
-		MyLog.E(TAG, "ExecApiTask");
+		MyLog.D(TAG, "ExecApiTask");
 		// サーバへPOSTするデータを設定 
 		Dictionary<string, string> status = user.m_status;
 		status.Add ("marketType", "2");
 		status.Add ("warningDevice", "0");
 		foreach (KeyValuePair<string, string> pair in status)
 		{
-			MyLog.I(TAG, "param = " + pair.Key + " " + pair.Value);
+			MyLog.I(TAG, pair.Key + " : " + pair.Value);
 		}
 		StartCoroutine(requestHttp(url, status));
 	}
@@ -30,7 +30,7 @@ public class HttpCreateTask : HttpBaseTask {
 	// HTTP POST リクエスト
 	public override IEnumerator requestHttp(string url, Dictionary<string, string> post)
 	{
-		MyLog.E(TAG, "requestHttp");
+		MyLog.D(TAG, "requestHttp");
 		string status = "-1";
 
 		WWWForm form = new WWWForm();
@@ -44,9 +44,9 @@ public class HttpCreateTask : HttpBaseTask {
 
 		Dictionary<string, string> array = www.responseHeaders;
 		status = getStatus(array);
-		MyLog.E(TAG, "STATUS = " + status);
-		MyLog.E(TAG, www.error);
-		MyLog.E(TAG, www.text);
+		MyLog.W(TAG, "STATUS = " + status);
+		MyLog.E(TAG, "error " + www.error);
+		MyLog.W(TAG, "www.text = " + www.text);
 		httpTaskFinishedDelegate = TopViewController.HttpTaskFinishedDelegate;
 		if (status.Equals(CREATE_SUCCESS)) {			
 			httpTaskFinishedDelegate(CREATE_SUCCESS, www.text, null);
