@@ -57,11 +57,11 @@ public static class MyLog
 	/// 各レベルのログ色
 	private static Color[] LOG_COLOR =
 	{
-		Color.gray,
-		Color.white,
-		Color.cyan,
-		Color.yellow,
-		Color.red
+		Color.gray,   // V
+		Color.white,  // D
+		Color.cyan,   // I
+		Color.yellow, // W
+		Color.red     // E
 	};
 	#endregion
 

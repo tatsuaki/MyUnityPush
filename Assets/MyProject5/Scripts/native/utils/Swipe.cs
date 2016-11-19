@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Swipe 操作
+/// </summary>
 public class Swipe : MonoBehaviour {
 	private const string TAG = "Swipe";
 
@@ -19,57 +22,51 @@ public class Swipe : MonoBehaviour {
 	public Camera mainCamera;
 	private GameObject player;
 
+	public const float width = 1920.0f;    // 横幅 (目標解像度)
+	public const float height = 1080.0f;   // 高さ (目標解像度)
+	public int rect;
+
+	bool isForward;
+
 	void Start(){
 		// mainCamera = GameObject.Find ("MainCamera").GetComponent<Camera>();
-		// player = GameObject.Find("player").GetComponent();
 		player = GameObject.Find("Player");
 	}
+
 	void Update () {
 		if (Input.GetMouseButtonDown (0)) {
 			isSelected = true;
 			Vector3 mousePos = Input.mousePosition;
+
+			if (mousePos.y > (Screen.height / 2)) {
+				isForward = true;
+			} else {
+				isForward = false;
+			}
+			MyLog.W(TAG, "mousePos x " + mousePos.x + " y " + mousePos.y + " z " + mousePos.z);
 			mousePos.z = 1.0f;
 			touchStartPos = mainCamera.ScreenToWorldPoint( mousePos ); 
-			StartPos = touchStartPos.x;
-			start = player.transform.position;
 			MyLog.I(TAG, "GetMouseButtonDown");
+			MyLog.W(TAG, "ScreenToWorldPoint x " + touchStartPos.x + " y " + touchStartPos.y + " z " + touchStartPos.z);
 		}
 		if (Input.GetMouseButtonUp (0)) {
 			isSelected = false;
-			bool resilt =  NextConfig.moveType;
-//			MyLog.I(TAG, "GetMouseButtonUp");
-//			Vector3 mousePos = Input.mousePosition;
-//			mousePos.z = 1.0f;
-//			touchEndPos = mainCamera.ScreenToWorldPoint( mousePos ); 
-//			EndPos = touchEndPos.x;
-//			float posi = touchStartPos.x - touchEndPos.x;
-//			if (resilt) {
-//				mainCamera.transform.position = new Vector3 (touchStartPos.x + posi, touchStartPos.y, 1);
-//				player.transform.position = new Vector3 (touchStartPos.x + posi, touchStartPos.y, 1);
-//			} else {
-//				mainCamera.transform.position = new Vector3 (touchEndPos.x, touchEndPos.y, 1);
-//				player.transform.position = new Vector3 (touchEndPos.x, touchEndPos.y, 1);
-//			}
-//			if (StartPos > EndPos) {
-//				mainCamera.transform.position = new Vector3 (touchStartPos.x + posi, touchStartPos.y, 1);
-//				player.transform.position = new Vector3 (touchStartPos.x + posi, touchStartPos.y, 1);
-//			} else if (StartPos < EndPos) {
-//				mainCamera.transform.position = new Vector3 (touchStartPos.x + posi, touchStartPos.y, 1);
-//				player.transform.position = new Vector3 (touchStartPos.x + posi, touchStartPos.y, 1);
-//			}
-			MyLog.W(TAG, "player.transform.position.x " + player.transform.position.x);
-			MyLog.W(TAG, "player.transform.position.y " + player.transform.position.y);
-			StartPos = 0;
-			EndPos = 0;	
+			MyLog.I(TAG, "GetMouseButtonUp");
+			MyLog.W(TAG, "x " + player.transform.position.x + " y " + player.transform.position.y + " z " + player.transform.position.z);
 		}
 		if (isSelected) {
 			Vector3 mousePos = Input.mousePosition;
 			mousePos.z = 1.0f;
-			touchEndPos = mainCamera.ScreenToWorldPoint( mousePos ); 
-			EndPos = touchEndPos.x;
-			float posi = touchStartPos.x - touchEndPos.x;
-			mainCamera.transform.position = new Vector3 (touchEndPos.x, 1, touchEndPos.z);
-			player.transform.position = new Vector3 (touchEndPos.x, 1, touchEndPos.z);
+			touchEndPos = mainCamera.ScreenToWorldPoint( mousePos );
+
+			float result_z = 0;
+			if (!isForward) {
+				// touchEndPos.z = touchEndPos.z - 2;
+				result_z = 2;
+			}
+			mainCamera.transform.position = new Vector3 (touchEndPos.x, 1, touchEndPos.z - result_z);
+			player.transform.position = new Vector3 (touchEndPos.x, 1, touchEndPos.z - result_z);
+			// MyLog.W(TAG, "x " + player.transform.position.x + " y " + player.transform.position.y + " z " + player.transform.position.z);
 		}
 	}
 	void Flick(){
@@ -119,4 +116,33 @@ public class Swipe : MonoBehaviour {
 //			break;
 //		}
 //	}
+
+	public void Awake() {
+		float targetAspect;  // 目標のアスペクト比
+		float curAspect;     // 補正前の「Scene」のアスペクト比
+		float ratio;         // 補正前の「Scene」のアスペクト比 ÷ 目標のアスペクト比
+
+		targetAspect = width / height;
+		// 補正前の「Scene」の横幅・縦幅はSceneのメンバ変数から取得可能
+		curAspect = Screen.width * 1.0f / Screen.height;  
+		ratio = curAspect / targetAspect;
+		MyLog.I(TAG, "Screen.width = " + Screen.width + " Screen.height = " + Screen.height);
+		// 表示領域の横幅・高さ・左上のXY座標をセット
+		// 横長の場合
+		if (1.0f > ratio) {
+			//			cam.rect.x = 0.0f;
+			//			cam.rect.width = 1.0f;
+			//			cam.rect.y = (1.0f - ratio) / 2.0f;
+			//			cam.rect.height = ratio;
+			//			cam.orthographicSize = Screen.width / 2.0f;
+		} else { // 縦長の場合
+			ratio = 1.0f / ratio;
+			//			cam.rect.x = (1.0f - ratio) / 2.0f;
+			//			cam.rect.width = ratio;
+			//			cam.rect.y = 0.0f;
+			//			cam.rect.height = 1.0f;
+			//			cam.orthographicSize = Screen.height / 2.0f;
+		}
+		// camRect = cam.rect;
+	}
 }

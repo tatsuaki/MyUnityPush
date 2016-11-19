@@ -49,13 +49,13 @@ public class NextViewController : MonoBehaviour {
 			});
 		}
 
-		if (GetMovekButton() != null) 
+		if (GetMoveButton() != null) 
 		{
-			GetMovekButton().onClick.AddListener(() => {
+			GetMoveButton().onClick.AddListener(() => {
 				bool resilt =  NextConfig.moveType;
 				resilt = !resilt;
 				NextConfig.moveType = resilt;
-				MyLog.I(TAG, "GetMovekButton resilt = " + resilt);
+				MyLog.I(TAG, "GetMoveButton resilt = " + resilt);
 			});
 		}
 	}
@@ -78,9 +78,9 @@ public class NextViewController : MonoBehaviour {
 	{
 		return GameObject.Find("BackButton").GetComponent<Button>();
 	}
-	private Button GetMovekButton()
+	private Button GetMoveButton()
 	{
-		return GameObject.Find("MovekButton").GetComponent<Button>();
+		return GameObject.Find("MoveButton").GetComponent<Button>();
 	}
 	void OnGUI () {
 		// Plane plane = GetLogPlane();
