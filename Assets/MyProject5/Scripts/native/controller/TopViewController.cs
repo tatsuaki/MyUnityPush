@@ -8,6 +8,12 @@ using UnityEngine.SceneManagement;
 
 using System.Diagnostics; // Conditional
 
+using com.adjust.sdk;
+
+/// <summary>
+/// TopScene コントローラー
+/// </summary>
+// [ExecuteInEditMode]
 public class TopViewController : MonoBehaviour {
 	private const string TAG = "TopViewController";
 
@@ -63,11 +69,16 @@ public class TopViewController : MonoBehaviour {
 //		m_AdManager = MyAdManager.Instance;
 
 		#if UNITY_ANDROID
+		// m_AndroidPluguin = GameObject.Find("AndroidPlugin").GetComponent<AndroidPlugin>();
 		if (null == m_AndroidPluguin) {
 			m_AndroidPluguin = gameObject.AddComponent<AndroidPlugin>();
 			MyLog.I(TAG, "add AndroidPlugin");
 		}
 		m_AndroidPluguin.inits();
+		#endif
+
+		#if TESTN
+		MyLog.I(TAG, "TESTN");
 		#endif
 		InitUI();
 	}
@@ -145,6 +156,15 @@ public class TopViewController : MonoBehaviour {
 //			});
 //		}
 
+		if (GetNextButton() != null) 
+		{
+			GetNextButton().onClick.AddListener(() => {
+				#if UNITY_ANDROID
+				SceneManager.LoadScene("next");
+				#endif
+			});
+		}
+
 		if (GetCommonWriteFileButton() != null) 
 		{
 			GetCommonWriteFileButton().onClick.AddListener(() => {
@@ -213,6 +233,12 @@ public class TopViewController : MonoBehaviour {
 				string readResult = SgpJni.CallnativeGetUserAgent();
 				MyLog.W(TAG, "GetUAButton CallnativeGetUserAgent = " + readResult);
 				#endif
+
+				AdjustConfig adjustConfig;
+				adjustConfig = new AdjustConfig(MyConfig.ADJUST_TOKEN, AdjustEnvironment.Sandbox);
+				Adjust.start(adjustConfig);
+
+				// m_AdManager.SendMessage("test", this);
 			});
 		}
 
@@ -288,7 +314,7 @@ public class TopViewController : MonoBehaviour {
 		{
 			GetCreateButton().onClick.AddListener(() => {
 				#if UNITY_ANDROID
-				authTask();
+				// authTask();
 				#endif
 			});
 		}
@@ -299,21 +325,22 @@ public class TopViewController : MonoBehaviour {
 	public void authTask() {
 		MyLog.I(TAG, "authTask start");
 
-		// nativeからauth term取得
+        // nativeからauth term取得
 
-		// TO jni
+        // TO jni
 
-		// FinishApi {"entry":{"appId":"95","authCode":"GJEJx0hhNa","gamecenterId":"",
-		// "googleId":"","facebook_id":"105177593297634","invitationCode":"EtTe64bt4N","
-		// termId":"6ui8qsNNzE","invitationId":"","userType":"0","status":"0"}}
+        // FinishApi {"entry":{"appId":"95","authCode":"GJEJx0hhNa","gamecenterId":"",
+        // "googleId":"","facebook_id":"105177593297634","invitationCode":"EtTe64bt4N","
+        // termId":"6ui8qsNNzE","invitationId":"","userType":"0","status":"0"}}
 
 
-		MyUser user = new MyUser();
+        MyUser user = new MyUser();
 //		string authCode = "I4XrTJps9a";
 		string termId = "LOB3LwzOZ";
-		string authCode = "";
+		string authCode = "6oP9XqUo7G";
+		string facebookId = "";
 		//string termId = "";
-		string facebookId = "127301327745362";// 127301327745362
+		//string facebookId = "127301327745362";// 127301327745362
 		// "authCode":"6oP9XqUo7G","termId":"v7nvJdh08H"  // Gmxl
 		user.Initialize(authCode, termId, facebookId);
 		// user.Initialize("", "", "105177593297634"); // ok
@@ -371,6 +398,8 @@ public class TopViewController : MonoBehaviour {
 	public void Start()
 	{
 		MyLog.I(TAG, "start");
+		//ゲームオブジェクトを5秒後にDestroy
+		// Destroy(GameObject.CreatePrimitive(PrimitiveType.Cube), 5);
 		// m_AdManager.OnStart();
 	}
 
@@ -383,6 +412,10 @@ public class TopViewController : MonoBehaviour {
 	public void Update()
 	{
 		// m_AdManager.OnUpdate();
+	}
+	private Button GetNextButton()
+	{
+		return GameObject.Find("NextButton").GetComponent<Button>();
 	}
 
 	private Button GetBuyButton()

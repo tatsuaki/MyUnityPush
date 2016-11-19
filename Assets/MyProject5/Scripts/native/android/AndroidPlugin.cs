@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// AndroidPlugin
+/// </summary>
 public class AndroidPlugin : MonoBehaviour {
 	private const string TAG = "AndroidPlugin";
 	private const string NATIVE_CLASS   = "com.tatuaki.unity.utils.NativePlugin";

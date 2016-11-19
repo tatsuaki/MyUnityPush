@@ -7,3 +7,5 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/MyProject5/Scenes/top.unity
+  - enabled: 1
+    path: Assets/MyProject5/Scenes/next.unity

@@ -5,7 +5,7 @@ PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 8
   productGUID: b2d9ddd0cac3c0c408b50677297774e5
-  AndroidProfiler: 0
+  AndroidProfiler: 1
   defaultScreenOrientation: 3
   targetDevice: 2
   useOnDemandResources: 0
@@ -110,8 +110,8 @@ PlayerSettings:
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
   iPhoneBuildNumber: 0
-  ForceInternetPermission: 0
-  ForceSDCardPermission: 0
+  ForceInternetPermission: 1
+  ForceSDCardPermission: 1
   CreateWallpaper: 0
   APKExpansionFiles: 0
   preloadShaders: 0
@@ -167,7 +167,7 @@ PlayerSettings:
   androidSplashScreen: {fileID: 0}
   AndroidKeystoreName: C:/Users/maki/Desktop/Unity_project/MyProject5/keystores/unity.jks
   AndroidKeyaliasName: unity
-  AndroidTVCompatibility: 1
+  AndroidTVCompatibility: 0
   AndroidIsGame: 1
   androidEnableBanner: 1
   m_AndroidBanners:
@@ -343,7 +343,14 @@ PlayerSettings:
   psp2UseDebugIl2cppLibs: 0
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    1: CROSS_PLATFORM_INPUT
+    4: CROSS_PLATFORM_INPUT;MOBILE_INPUT
+    7: CROSS_PLATFORM_INPUT;MOBILE_INPUT
+    14: CROSS_PLATFORM_INPUT;MOBILE_INPUT
+    17: MOBILE_INPUT
+    20: MOBILE_INPUT
+    22: MOBILE_INPUT
   metroPackageName: MyProject5
   metroPackageVersion: 
   metroCertificatePath: 
@@ -476,7 +483,7 @@ PlayerSettings:
   Game_Performance_ServiceEnabled::Game_Performance_ServiceEnabled: False
   Hub_ServiceEnabled::Hub_ServiceEnabled: False
   Purchasing_ServiceEnabled::Purchasing_ServiceEnabled: False
-  UNet_ServiceEnabled::UNet_ServiceEnabled: False
+  UNet_ServiceEnabled::UNet_ServiceEnabled: True
   Unity_Ads_ServiceEnabled::Unity_Ads_ServiceEnabled: False
   vectorPropertyNames:
   - Android::VR::enabledDevices
@@ -516,7 +523,7 @@ PlayerSettings:
   XboxOne::VR::enabledDevices: []
   iOS::VR::enabledDevices: []
   tvOS::VR::enabledDevices: []
-  cloudProjectId: 
-  projectName: 
-  organizationId: 
+  cloudProjectId: 843b02e5-cd73-48fd-83dd-386e4ff44507
+  projectName: MyUnity_1116
+  organizationId: tatsuaki_kin
   cloudEnabled: 0

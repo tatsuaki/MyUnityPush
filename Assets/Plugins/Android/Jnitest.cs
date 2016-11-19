@@ -29,7 +29,7 @@ public class Jnitest {
 		IntPtr ptr2 = CallNativeAndroid(ptr1);
 		string str2 = Marshal.PtrToStringAnsi(ptr2);
 
-		Marshal.FreeHGlobal(ptr1);
+ 		Marshal.FreeHGlobal(ptr1);
 		// string auu = loadFile(filename);
 		Debug.Log("str2 = " + str2);
 		return str2;
